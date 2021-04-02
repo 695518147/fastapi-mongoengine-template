@@ -5,4 +5,6 @@
 # None
 
 # App-Local Imports
-from app.crud.product import product
+# None
+
+datetime_format = "%Y-%m-%dT%H:%M:%S.%fZ"
