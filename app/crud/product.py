@@ -1,7 +1,13 @@
-from typing import Optional, List
+# Standard Library Imports
+from typing import (
+    List,
+    Optional
+)
 
-from sqlalchemy.orm import Session
+# 3rd-Party Imports
+# None
 
+# App-Local Imports
 from app.crud.base import CRUDBase
 from app.models.product import Product
 from app.schemas import ProductCreate, ProductUpdate
