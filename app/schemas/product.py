@@ -1,10 +1,14 @@
+# Standard Library Imports
 from typing import Optional
 
+# 3rd-Party Imports
 from pydantic import BaseModel
+
+# App-Local Imports
+# None
 
 
 class ProductBase(BaseModel):
-    id: Optional[int]
     name: Optional[str]
     price: Optional[float]
 
@@ -15,10 +19,9 @@ class ProductCreate(ProductBase):
 
 
 class ProductUpdate(ProductBase):
-    id: int
     pass
 
 
 class ProductResponse(ProductBase):
-    class Config:
+    class Config:  # pylint: disable=too-few-public-methods
         orm_mode = True

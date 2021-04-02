@@ -5,4 +5,7 @@
 # None
 
 # App-Local Imports
-from app.core.config import settings
+# None
+
+class DocumentDoesNotExistException(Exception):
+    pass

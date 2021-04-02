@@ -1,16 +1,15 @@
-from typing import Dict, Generator
+# Standard Library Imports
+from typing import (
+    Dict,
+    Generator
+)
 
+# 3rd-Party Imports
 import pytest
-
 from fastapi.testclient import TestClient
 
-from app.database.session import SessionLocal
+# App-Local Imports
 from app.main import app
-
-
-@pytest.fixture(scope="session")
-def db() -> Generator:
-    yield SessionLocal()
 
 
 @pytest.fixture(scope="module")
@@ -22,7 +21,6 @@ def client() -> Generator:
 @pytest.fixture(scope="module")
 def random_product() -> Dict[str, str]:
     return {
-        "id": 1,
         "name": "Test Product",
         "price": 80,
     }

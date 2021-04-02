@@ -1,5 +1,10 @@
+# Standard Library Imports
+# None
+
+# 3rd-Party Imports
 from fastapi import APIRouter
 
+# App-Local Imports
 from app.api.v1 import products
 
 api_router = APIRouter()

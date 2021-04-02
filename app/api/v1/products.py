@@ -1,21 +1,48 @@
-from typing import Any, List
+# Standard Library Imports
+from typing import (
+    Any,
+    List
+)
 import logging
 
-from fastapi import APIRouter, Depends, HTTPException, status
+# 3rd-Party Imports
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    status
+)
 
+# App-Local Imports
 from app import schemas, crud
-from app.api.deps import get_db
+from app.lib.exceptions import DocumentDoesNotExistException
 
 router = APIRouter()
 logger = logging.getLogger()
 
 
+@router.get("/{product_name}", response_model=schemas.ProductResponse)
+def get_product(product_name: str) -> Any:
+    """
+    Retrieve a single product.
+    """
+    try:
+        product = crud.product.get_by_name(name=product_name)
+    except DocumentDoesNotExistException as ddnee:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"product '{product_name}' does not exist"
+        ) from ddnee
+
+    return product
+
+
 @router.get("", response_model=List[schemas.ProductResponse])
-def read_products(skip: int = 0, limit: int = 100) -> Any:
+def get_products(skip: int = 0, limit: int = 100) -> Any:
     """
     Retrieve all products.
     """
     products = crud.product.get_multi(skip=skip, limit=limit)
+    print(products)
     return products
 
 
@@ -28,31 +55,35 @@ def create_product(*, product_in: schemas.ProductCreate) -> Any:
     return product
 
 
-@router.put("", response_model=schemas.ProductResponse)
-def update_product(*, product_in: schemas.ProductUpdate) -> Any:
+@router.put("/{product_name}", response_model=schemas.ProductResponse)
+def update_product(*, product_name: str, product_in: schemas.ProductUpdate) -> Any:
     """
     Update existing products.
     """
-    product = crud.product.get_by_name(model_id=product_in.id)
-    if not product:
+    try:
+        product = crud.product.get_by_name(name=product_name)
+    except DocumentDoesNotExistException as ddnee:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="The product with this ID does not exist in the system.",
-        )
+            detail=f"product '{product_name}' does not exist"
+        ) from ddnee
+
     product = crud.product.update(db_obj=product, obj_in=product_in)
     return product
 
 
-@router.delete("", response_model=schemas.Message)
-def delete_product(*, id: int) -> Any:
+@router.delete("/{product_name}", response_model=schemas.Message)
+def delete_product(*, product_name: str) -> Any:
     """
     Delete existing product.
     """
-    product = crud.product.get(model_id=id)
-    if not product:
+    try:
+        product = crud.product.get_by_name(name=product_name)
+    except DocumentDoesNotExistException as ddnee:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="The product with this ID does not exist in the system.",
-        )
+            detail=f"product '{product_name}' does not exist"
+        ) from ddnee
+
     crud.product.remove(model_id=product.id)
-    return {"message": f"Product with ID = {id} deleted."}
+    return {"message": f"product {product_name} deleted."}
