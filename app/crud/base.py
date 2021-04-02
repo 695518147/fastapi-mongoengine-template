@@ -1,24 +1,22 @@
 # Standard Library Imports
 from typing import (
-    Any, 
-    Dict, 
-    Generic, 
-    List, 
-    Optional, 
-    Type, 
-    TypeVar, 
+    Any,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Type,
+    TypeVar,
     Union
 )
 
 # 3rd-Party Imports
 from bson import ObjectId
-from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
-from mongoengine.errors import NotUniqueError
 from pydantic import BaseModel
 
 # App-Local Imports
-from app.database.base_class import Base
+from app.models import Base
 
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -40,7 +38,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return self.model.objects(pk=ObjectId(model_id))
 
     def get_multi(self, *, skip: int = 0, limit: int = 100) -> List[ModelType]:
-        return [o for o in self.model.objects[skip:skip+limit]]
+        return [o for o in self.model.objects[skip:skip+limit]]  # pylint: disable=unnecessary-comprehension
 
     def create(self, *, obj_in: CreateSchemaType) -> ModelType:
         obj_in_data = jsonable_encoder(obj_in)
@@ -50,17 +48,17 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj
 
     def update(self, *, db_obj: ModelType, obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> ModelType:
-        obj_data = jsonable_encoder(db_obj)
+        obj_data = db_obj.to_mongo()
 
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
             update_data = obj_in.dict(exclude_unset=True)
-        
+
         for field in obj_data:
             if field in update_data:
                 setattr(db_obj, field, update_data[field])
-        
+
         db_obj.save()
         return db_obj
 

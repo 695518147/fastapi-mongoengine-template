@@ -1,9 +1,13 @@
-from sqlalchemy import Column, Integer, String, Float
+# Standard Library Imports
+# None
 
-from app.database.base_class import Base
+# 3rd-Party Imports
+from mongoengine import StringField, FloatField, Document
+
+# App-Local Imports
+# None
 
 
-class Product(Base):
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    price = Column(Float, nullable=False)
+class Product(Document):
+    name = StringField(unique=True, required=True)
+    price = FloatField(required=True)

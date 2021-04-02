@@ -7,7 +7,7 @@ import logging
 # None
 
 # App-Local Imports
-from app.lib.helpers import datetime_format
+from app.lib.helpers import DATETIME_FORMAT
 
 
 class JsonFormatter(logging.Formatter):
@@ -16,13 +16,14 @@ class JsonFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         data = {
-            "timestamp": datetime.utcnow().strftime(datetime_format),
+            "timestamp": datetime.utcnow().strftime(DATETIME_FORMAT),
             "message": record.msg,
             "level": record.levelname,
             "module": record.module,
             "function": record.funcName
         }
         return json.dumps(data)
+
 
 def init_logging(logfile: str) -> logging.Logger:
     file_handler = logging.FileHandler(logfile)

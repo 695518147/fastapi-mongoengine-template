@@ -7,4 +7,4 @@
 # App-Local Imports
 # None
 
-datetime_format = "%Y-%m-%dT%H:%M:%S.%fZ"
+DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"

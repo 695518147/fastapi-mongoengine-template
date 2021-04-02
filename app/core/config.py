@@ -1,4 +1,11 @@
-import secrets
+# Standard Library Imports
+# None
+
+# 3rd-Party Imports
+# None
+
+# App-Local Imports
+# None
 
 from pydantic import BaseSettings
 
@@ -6,10 +13,12 @@ from pydantic import BaseSettings
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "FastAPI"
-    SECRET_KEY: str = secrets.token_urlsafe(32)
-    SQLALCHEMY_DATABASE_URI: str = "postgresql://localhost:5432/fastapi_db"
+    MONGODB_DBNAME: str
+    MONGODB_HOST: str
+    MONGODB_PORT: int
+    LOGFILE: str
 
-    class Config:
+    class Config:   # pylint:  disable=too-few-public-methods
         env_file = ".env"
 
 
