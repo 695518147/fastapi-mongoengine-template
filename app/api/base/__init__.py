@@ -5,9 +5,7 @@
 from fastapi import APIRouter
 
 # App-Local Imports
-from app.api.v1 import (
-    products
-)
+from app.api.base import main
 
 api_router = APIRouter()
-api_router.include_router(products.router, prefix="/products", tags=["products"])
+api_router.include_router(main.router)

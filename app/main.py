@@ -6,6 +6,7 @@ from fastapi import FastAPI
 import uvicorn
 
 # App-Local Imports
+from app.api.base import api_router as base_router
 from app.api.v1 import api_router
 from app.core import settings
 from app.database.session import (
@@ -19,7 +20,13 @@ logger.info(f"{settings.PROJECT_NAME} is spinning up.")
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
+# This just creates a redirect to /docs
+app.include_router(base_router, prefix="")
+
+# The actual API
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+# Database connect / disconnect
 app.add_event_handler("startup", mongo_connect)
 app.add_event_handler("shutdown", close_mongo)
 
