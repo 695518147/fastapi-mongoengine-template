@@ -9,6 +9,11 @@
 
 from pydantic import BaseSettings
 
+# READ: https://fastapi.tiangolo.com/advanced/settings/#settings-and-testing
+
+import os
+print(os.environ.get('TESTING'))
+
 
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"

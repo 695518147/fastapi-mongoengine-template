@@ -25,14 +25,14 @@ def test_read_products(client: TestClient) -> None:
 
 def test_update_product(client: TestClient, random_product: Dict[str, str]) -> None:
     random_product["price"] = 100
-    response = client.put(f"{settings.API_V1_STR}/products", json=random_product)
+    response = client.put(f"{settings.API_V1_STR}/products/{random_product.get('name')}", json=random_product)
     product = response.json()
     assert response.status_code == 200
     assert product.get("price") == random_product.get("price")
 
 
 def test_delete_product(client: TestClient, random_product: Dict[str, str]) -> None:
-    response = client.delete(f"{settings.API_V1_STR}/products?id={random_product.get('id')}")
+    response = client.delete(f"{settings.API_V1_STR}/products/{random_product.get('name')}")
     message = response.json()
     assert response.status_code == 200
     assert "message" in message
