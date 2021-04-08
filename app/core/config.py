@@ -10,18 +10,21 @@
 from pydantic import BaseSettings
 
 # READ: https://fastapi.tiangolo.com/advanced/settings/#settings-and-testing
-
-import os
-print(os.environ.get('TESTING'))
+# import os
+# print(os.environ.get('TESTING'))
 
 
 class Settings(BaseSettings):
-    API_V1_STR: str = "/api/v1"
-    PROJECT_NAME: str = "FastAPI"
+    API_V1_PATH: str = "/api/v1"
+    API_NAME: str = "FastAPI"
+
     MONGODB_DBNAME: str
     MONGODB_HOST: str
     MONGODB_PORT: int
-    LOGFILE: str
+    MONGO_MONITORING: bool = False
+
+    LOG_FILE: str
+    LOG_LEVEL: str = "INFO"
 
     class Config:   # pylint:  disable=too-few-public-methods
         env_file = ".env"

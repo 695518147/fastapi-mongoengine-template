@@ -1,5 +1,5 @@
 # Standard Library Imports
-# None
+import sys
 
 # 3rd-Party Imports
 from fastapi import FastAPI
@@ -13,18 +13,24 @@ from app.database.session import (
     mongo_connect,
     close_mongo
 )
+from app.lib.exceptions import ConfigException
 from app.lib.logging import init_logging
 
-logger = init_logging(settings.LOGFILE)
-logger.info(f"{settings.PROJECT_NAME} is spinning up.")
+try:
+    logger = init_logging(settings.LOG_FILE, settings.LOG_LEVEL)
+except ConfigException as ce:
+    print(ce.message)
+    sys.exit(ce.exit_code)
 
-app = FastAPI(title=settings.PROJECT_NAME)
+logger.info(f"{settings.API_NAME} is spinning up.")
+
+app = FastAPI(title=settings.API_NAME)
 
 # This just creates a redirect to /docs
 app.include_router(base_router, prefix="")
 
 # The actual API
-app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(api_router, prefix=settings.API_V1_PATH)
 
 # Database connect / disconnect
 app.add_event_handler("startup", mongo_connect)
